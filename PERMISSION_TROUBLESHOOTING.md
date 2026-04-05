@@ -258,7 +258,7 @@ PYEOF
 - 记录 OpenClaw 权限问题解决方案（`exec security=full ask=off`）
 - 包含 GitHub API vs Maton Gateway 对比
 - 提供实战命令示例
-- **模型信息**: 本仓库的 AI 助手使用 `openrouter/stepfun/step-3.5-flash:free`
+- **模型信息**: 经过两次确认，本次修改使用的 AI 模型是 `openrouter/stepfun/step-3.5-flash:free`
 
 ---
 
