@@ -250,6 +250,18 @@ PYEOF
 
 ---
 
+## 更新历史
+
+### v1.0.0 (2026-04-05)
+
+- 新增 `PERMISSION_TROUBLESHOOTING.md` 文档
+- 记录 OpenClaw 权限问题解决方案（`exec security=full ask=off`）
+- 包含 GitHub API vs Maton Gateway 对比
+- 提供实战命令示例
+- **模型信息**: 本仓库的 AI 助手使用 `openrouter/stepfun/step-3.5-flash:free`
+
+---
+
 **附录: 完整示例脚本**
 
 ```python
@@ -281,58 +293,3 @@ pr = github_request(
 )
 print(f"PR #{pr['number']}: {pr['html_url']}")
 ```
-
----
-
-## 2026-04-05 工作记录：子分支合并与模型信息归档
-
-### 上下文
-- 仓库：`openclaw-github-workflow-skills`
-- 存在两个分支：`main`（主分支）与 `Openclaw`（子分支），子分支领先于主分支
-- 目标：将子分支改动合并到主分支，并在文档中记录模型信息
-
-### 操作流程
-
-1. **检查分支状态**
-```bash
-git fetch origin Openclaw:Openclaw
-git branch -a
-```
-
-2. **切换至主分支并合并**
-```bash
-git checkout main
-git merge --no-ff Openclaw -m "Merge branch 'Openclaw' into main"
-```
-
-3. **解决 README.md 冲突**
-- 冲突原因：子分支包含完整的文档导航和核心技能说明，主分支仅添加一行模型信息
-- 解决方案：保留子分支的完整 README 内容，并在结尾追加模型信息
-
-4. **添加模型信息并确认**
-- 模型名称（两次检查确认）：`openrouter/stepfun/step-3.5-flash:free`
-- 添加到 `README.md` 末尾：
-  """
-  ---
-  *本助手使用的模型：`openrouter/stepfun/step-3.5-flash:free`（默认模型）*
-  """
-
-5. **提交并推送**
-```bash
-git add README.md
-git commit -m "Merge branch 'Openclaw' into main"
-git push origin main
-```
-
-### 验证
-```bash
-git ls-remote --heads origin
-# 输出应显示 origin/main 指向最新的提交
-```
-
-### 要点总结
-- 合并时出现冲突，需手动保留完整文档结构
-- 模型信息在 README 和本文末尾均记录，便于追溯
-- 本次合并完成了教程仓库的新版本，包含 `PERMISSION_TROUBLESHOOTING.md` 等改进
-
-**模型最终确认**: `openrouter/stepfun/step-3.5-flash:free`（与默认模型一致）
