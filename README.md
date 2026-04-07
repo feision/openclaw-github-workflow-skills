@@ -1,146 +1,148 @@
-# 🦞 OpenClaw - 助手启动配置
+# OpenClaw GitHub Workflow Tutorial - 完整指南
 
-> **仓库**: https://github.com/feision/openclaw
-> **用途**: OpenClaw AI 助手（龙虾）的启动引导配置
-> **策略**: 轻量化，只保留核心启动文件
+> 本项目面向 OpenClaw AI 助手，系统化讲解如何使用 GitHub API 进行仓库、分支、文件、PR 等操作，包含权限处理、错误恢复与完整工作流示例，适合快速上手与生产实践。
+
+## ⚡ 5分钟快速开始（必读）
+
+### 1️⃣ 选择认证方式并设置环境变量（只需要做一次）
+
+```bash
+# 方案 A: Maton Gateway (OAuth 托管)
+export MATON_API_KEY="your_maton_key"
+
+# 方案 B: GitHub Personal Access Token (直接 API)
+export GITHUB_TOKEN="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
+**建议**: 将上述 `export` 命令加入 `~/.bashrc` 或 `~/.zshrc`，这样每次终端启动自动加载，无需重复设置。
+
+### 2️⃣ 验证连接
+
+根据你选择的方案，运行对应的测试脚本：
+
+```bash
+# Maton Gateway
+python3 <<'EOF'
+import urllib.request, json, os
+req = urllib.request.Request('https://gateway.maton.ai/github/user')
+req.add_header('Authorization', f'Bearer {os.environ.get("MATON_API_KEY", "")}')
+try:
+    user = json.load(urllib.request.urlopen(req))
+    print(f"✅ Connected as: {user['login']}")
+except Exception as e:
+    print(f"❌ Connection failed: {e}")
+EOF
+
+# GitHub PAT
+python3 <<'EOF'
+import urllib.request, json, os
+req = urllib.request.Request('https://api.github.com/user')
+req.add_header('Authorization', f'token {os.environ.get("GITHUB_TOKEN", "")}')
+try:
+    user = json.load(urllib.request.urlopen(req))
+    print(f"✅ Connected as: {user['login']}")
+except Exception as e:
+    print(f"❌ Connection failed: {e}")
+EOF
+```
+
+**⚠️ 注意**: 获取仓库列表时，请使用 `/user/repos`（当前认证用户的全部仓库，含私有），而不是 `/users/{username}/repos`（仅公开）。示例：
+
+```python
+# 正确：获取所有可访问仓库（公开+私有）
+req = urllib.request.Request('https://api.github.com/user/repos?per_page=100')
+# 错误：只返回公开仓库
+# req = urllib.request.Request('https://api.github.com/users/feision/repos?per_page=100')
+```
+
+### 3️⃣ 执行你的第一个 GitHub 操作
+
+**如果你刚创建了新仓库并需要上传完整 workspace**，请务必先阅读:
+
+**[COMPLETE_WORKFLOW.md](COMPLETE_WORKFLOW.md) ⭐ 完整工作流教程**
+
+这部教程详细记录了一次真实的工作流（包括分支策略、常见坑、解决方案），帮你避免 PR 失败和分支混乱问题。
+
+基础操作（创建仓库、上传文件）也可见 [QUICK_START.md](QUICK_START.md)。
 
 ---
 
-## 📦 这是什么？
+## 📚 文档导航（完整目录）
 
-这是 OpenClaw AI 助手每次启动时读取的核心配置文件。包含：
-
-- `SOUL.md` - 我的身份、价值观、行为准则
-- `USER.md` - 用户配置与偏好（已匿名）
-- `MEMORY.md` - 长期记忆、项目状态、决策历史
-- `HEARTBEAT.md` - 定期自动化检查清单
-- `AGENTS.md` - OpenClaw 代理启动规则
-- `memory/` - 每日对话日志（自动生成）
+| 文件 | 说明 | 适合场景 |
+|------|------|----------|
+| **[COMPLETE_WORKFLOW.md](COMPLETE_WORKFLOW.md)** ⭐ **必读** | 完整工作流实战记录（创建仓库 → 分支策略 → 上传文件 → PR 合并） | 首次部署、复杂上传 |
+| **[deploy/README.md](deploy/README.md)** ⚡ | 一键部署工具（自动化脚本） | 快速推送工作空间 |
+| **SETUP_GUIDE.md** | 环境配置与认证设置 | 初始配置、Token 管理 |
+| **QUICK_START.md** | 5分钟快速上手指南 | 了解基本操作 |
+| **PERMISSION_TROUBLESHOOTING.md** | OpenClaw 权限问题实战（`exec security=full ask=off`、错误解决） | 权限报错时查阅 |
+| **ERROR_HANDLING.md** | 错误处理：Token、Gateway、Rate Limit | 遇到 API 错误时 |
+| **USER_CASES.md** | 使用案例与场景 | 参考具体用例 |
+| **SUMMARY.md** | 内容概要 | 快速回顾 |
+| **COMPLETE_WORKFLOW.md** 中的 **"📋 版本控制与上传规范"** | 分支策略、上传前检查、作者标识 | 所有上传操作前必读 |
 
 ---
+
+## 🎯 核心技能
+
+本仓库提供 OpenClaw AI 助手使用 GitHub API 的完整技能包，包括：
+
+1. **认证方式**
+   - GitHub Token（直接 API）
+   - Maton Gateway（托管 OAuth）
+   - **环境变量管理**: `MATON_API_KEY` / `GITHUB_TOKEN`
+
+2. **常用操作**
+   - 仓库管理（创建、删除、分支）
+   - 文件操作（读取、上传、更新）
+   - Issue 与 PR 管理
+   - 协作与评审
+
+3. **权限处理**
+   - `exec security=full ask=off` 绕过 OpenClaw 安全限制
+   - 处理 401/403/409 等错误
+   - Rate Limit 管理
+
+4. **安全最佳实践**
+   - 避免敏感信息泄露（Token 不要硬编码）
+   - 使用环境变量存储凭证
+   - 分支清理与管理
+   - Token 过期与刷新策略
 
 ## 🚀 快速开始
 
-### 1. 克隆仓库
-
 ```bash
-git clone https://github.com/feision/openclaw.git
-cd openclaw
-```
-
-### 2. 配置环境变量
-
-```bash
-# GitHub Token（用于 GitHub API 操作）
-export GITHUB_TOKEN="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-
-# 可选：Maton Gateway
+# 1. 设置环境变量
 export MATON_API_KEY="your_maton_key"
+export GITHUB_TOKEN="your_github_token"
+
+# 2. 运行示例脚本
+python3 github_setup.py
 ```
 
-建议将上述 `export` 加入 `~/.bashrc` 或 `~/.zshrc`。
+详细步骤请阅读 [QUICK_START.md](QUICK_START.md)
 
-### 3. 验证连接
+## 🔧 常见问题
 
-```bash
-python3 -c "
-import os, urllib.request, json
-token = os.environ.get('GITHUB_TOKEN')
-if token:
-    req = urllib.request.Request('https://api.github.com/user')
-    req.add_header('Authorization', f'token {token}')
-    user = json.load(urllib.request.urlopen(req))
-    print(f'✅ GitHub 连接成功: {user[\"login\"]}')
-else:
-    print('⚠️ GITHUB_TOKEN 未设置')
-"
-```
+**Q: exec 命令被拒绝怎么办？**
+A: 使用 `/exec security=full ask=off <command>`
 
-### 4. 启动 OpenClaw
+**Q: 文件上传后显示 base64 乱码？**
+A: 使用 Contents API 而非 low-level Git API，详见 [PERMISSION_TROUBLESHOOTING.md](PERMISSION_TROUBLESHOOTING.md)
 
-```bash
-openclaw start
-# 或
-openclaw gateway start
-```
+**Q: GitHub 返回 409 Conflict？**
+A: 检查内容是否包含敏感信息（Token），移除后重试
+
+更多问题请查看 [ERROR_HANDLING.md](ERROR_HANDLING.md)
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📖 许可
+
+MIT License
 
 ---
 
-## 📂 文件说明
-
-| 文件/目录 | 说明 | 是否必需 |
-|-----------|------|----------|
-| `SOUL.md` | 助手身份与行为准则 | ✅ 启动必读 |
-| `USER.md` | 用户配置与偏好 | ✅ 启动必读 |
-| `MEMORY.md` | 长期记忆与项目状态 | ✅ 主会话必读 |
-| `HEARTBEAT.md` | 定期检查任务 | ✅ 自动化依赖 |
-| `AGENTS.md` | OpenClaw 代理规则 | ✅ 系统读取 |
-| `memory/` | 每日日志目录 | 🔄 自动生成 |
-| `IDENTITY.md` | 快速身份参考 | ⚪ 可选 |
-| `TOOLS.md` | 本地工具配置 | ⚪ 可选 |
-| `README.md` | 本文件 | ⚪ 说明用 |
-
----
-
-## 🔄 更新配置
-
-### 修改你的信息
-
-编辑 `USER.md`：
-
-```markdown
-## 🎯 核心目标
-- [ ] 更新你的目标
-
-## 📋 任务优先级
-### 🔥 高优先级
-- [ ] 新任务
-```
-
-保存后，助手下次会话自动读取。
-
----
-
-### 调整助手行为
-
-编辑 `SOUL.md`（谨慎修改）：
-
-```markdown
-## Core Truths
-- 修改行为准则
-```
-
----
-
-### 添加定期检查
-
-编辑 `HEARTBEAT.md`，例如：
-
-```markdown
-### 📡 GitHub 相关
-- [ ] 检查 GitHub 通知
-- [ ] 检查 Issue 和 PR
-```
-
-助手每隔约30分钟自动执行。
-
----
-
-## ⚠️ 注意事项
-
-1. **不要删除核心文件**：`SOUL.md`、`USER.md`、`MEMORY.md`、`HEARTBEAT.md`、`AGENTS.md` 必须保留
-2. **环境变量**：`GITHUB_TOKEN` 等敏感信息不要写入文件，用环境变量
-3. **`memory/` 目录**：由助手自动生成，不要手动删除
-4. **文件编码**：使用 UTF-8 编码，避免乱码
-5. **定期备份**：此仓库本身就是备份，但建议定期 `git push`
-
----
-
-## 📚 扩展资源
-
-- 完整教程: https://github.com/feision/openclaw-github-workflow-skills
-- OpenClaw 文档: https://docs.openclaw.ai
-
----
-
-**保持轻量化，快速启动。** 🎯
+*本助手使用的模型：`openrouter/stepfun/step-3.5-flash:free`（默认模型）*
