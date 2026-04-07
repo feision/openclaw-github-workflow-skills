@@ -55,6 +55,8 @@ req = urllib.request.Request('https://api.github.com/user/repos?per_page=100')
 # req = urllib.request.Request('https://api.github.com/users/feision/repos?per_page=100')
 ```
 
+> 💡 **首选用 Git 操作**: 变量 `GITHUB_TOKEN` 已设置，直接使用 Git 命令上传。拉取代码后先备份本地仓库文件夹，再以 `openclaw` 子分支修改，作者名填写助理名，最后合并到主分支。
+
 ### 3️⃣ 执行你的第一个 GitHub 操作
 
 **如果你刚创建了新仓库并需要上传完整 workspace**，请务必先阅读:
