@@ -82,6 +82,9 @@ req = urllib.request.Request('https://api.github.com/user/repos?per_page=100')
 | **USER_CASES.md** | 使用案例与场景 | 参考具体用例 |
 | **SUMMARY.md** | 内容概要 | 快速回顾 |
 | **COMPLETE_WORKFLOW.md** 中的 **"📋 版本控制与上传规范"** | 分支策略、上传前检查、作者标识 | 所有上传操作前必读 |
+| **GITHUB_PAGES_DEPLOYMENT.md** 🆕 | GitHub Pages 部署完整指南（启用、CORS、404 诊断） | 部署静态网站必读 |
+
+---
 
 ---
 
