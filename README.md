@@ -1,17 +1,28 @@
 # OpenClaw GitHub Workflow Tutorial - 完整指南
 
+1. 本远程仓库不许上传任何文件和项目在这，除非用户明确要你添加、修改、删除本仓库内容。
+2. 用户的主页是github.com/feision，仍有大量空间可以存放新项目或内容。当需要增加、修改、删除项目或内容时，可以先获取用户的公开列表和私人列表，查看是否有已存在相关项目，询问用户是否在现有远程仓库上进行，或新建远程仓库。
+
 > 本项目面向 OpenClaw AI 助手，系统化讲解如何使用 GitHub API 进行仓库、分支、文件、PR 等操作，包含权限处理、错误恢复与完整工作流示例，适合快速上手与生产实践。
 
 ## ⚡ 5分钟快速开始（必读）
 
+### 认证方式顺序调整
+- **优先使用 GitHub Token**（环境变量 `GITHUB_TOKEN`）
+- 备用：Maton Gateway (OAuth)（环境变量 `MATON_API_KEY`）
+
+### 操作方式顺序调整
+- **首选 `curl`** 进行 GitHub API 调用
+- 备用：Python 脚本（`urllib` 或 `requests`）
+
 ### 1️⃣ 选择认证方式并设置环境变量（只需要做一次）
 
 ```bash
-# 方案 A: Maton Gateway (OAuth 托管)
-export MATON_API_KEY="your_maton_key"
-
-# 方案 B: GitHub Personal Access Token (直接 API)
+# 方案 A: GitHub Personal Access Token (直接 API) - **首选**
 export GITHUB_TOKEN="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# 方案 B: Maton Gateway (OAuth 托管) - 备用
+export MATON_API_KEY="your_maton_key"
 ```
 
 **建议**: 将上述 `export` 命令加入 `~/.bashrc` 或 `~/.zshrc`，这样每次终端启动自动加载，无需重复设置。
