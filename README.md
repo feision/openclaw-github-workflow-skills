@@ -32,11 +32,11 @@ export MATON_API_KEY="your_maton_key"
 根据你选择的方案，运行对应的测试脚本：
 
 ```bash
-# Maton Gateway
+# GitHub PAT (首选)
 python3 <<'EOF'
 import urllib.request, json, os
-req = urllib.request.Request('https://gateway.maton.ai/github/user')
-req.add_header('Authorization', f'Bearer {os.environ.get("MATON_API_KEY", "")}')
+req = urllib.request.Request('https://api.github.com/user')
+req.add_header('Authorization', f'token {os.environ.get("GITHUB_TOKEN", "")}')
 try:
     user = json.load(urllib.request.urlopen(req))
     print(f"✅ Connected as: {user['login']}")
@@ -44,11 +44,11 @@ except Exception as e:
     print(f"❌ Connection failed: {e}")
 EOF
 
-# GitHub PAT
+# Maton Gateway (备用)
 python3 <<'EOF'
 import urllib.request, json, os
-req = urllib.request.Request('https://api.github.com/user')
-req.add_header('Authorization', f'token {os.environ.get("GITHUB_TOKEN", "")}')
+req = urllib.request.Request('https://gateway.maton.ai/github/user')
+req.add_header('Authorization', f'Bearer {os.environ.get("MATON_API_KEY", "")}')
 try:
     user = json.load(urllib.request.urlopen(req))
     print(f"✅ Connected as: {user['login']}")
@@ -129,8 +129,8 @@ req = urllib.request.Request('https://api.github.com/user/repos?per_page=100')
 
 ```bash
 # 1. 设置环境变量
-export MATON_API_KEY="your_maton_key"
-export GITHUB_TOKEN="your_github_token"
+export GITHUB_TOKEN="your_github_token"  # 首选
+export MATON_API_KEY="your_maton_key"    # 备用
 
 # 2. 运行示例脚本
 python3 github_setup.py
